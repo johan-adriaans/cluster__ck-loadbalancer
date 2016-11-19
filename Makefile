@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------------------
 
 # name of container
-CONTAINER_NAME = johanadriaans/cluster__ck-loadbalancer
+CONTAINER_NAME = johanadriaans/clusterf.ck-loadbalancer
 
 # name of instance and other options you want to pass to docker run for testing
 INSTANCE_NAME = loadbalancer
