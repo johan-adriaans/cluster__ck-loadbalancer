@@ -79,15 +79,6 @@ backend bk_web
         {{end}}
       {{end}}
     {{end}}
-    # Detect and  possible canary instances
-    {{range $index, $machine := ls "/services/webserver-canary"}}
-      {{range $container := ls (printf "/services/webserver-canary/%s" $machine)}}
-        {{$upstream_path := printf "/services/webserver-canary/%s/%s/upstreams/10800" $machine $container}}
-        {{if exists $upstream_path}}
-           server worker-canary{{$index}} {{getv $upstream_path}} check maxconn 1
-        {{end}}
-      {{end}}
-    {{end}}
 
 backend bk_web_static
     mode http
@@ -102,15 +93,6 @@ backend bk_web_static
         {{$upstream_path := printf "/services/webserver/%s/%s/upstreams/1080" $machine $container}}
         {{if exists $upstream_path}}
            server worker{{$index}} {{getv $upstream_path}} check maxconn 1000
-        {{end}}
-      {{end}}
-    {{end}}
-    # Detect possible canary instances
-    {{range $index, $machine := ls "/services/webserver-canary"}}
-      {{range $container := ls (printf "/services/webserver-canary/%s" $machine)}}
-        {{$upstream_path := printf "/services/webserver-canary/%s/%s/upstreams/10800" $machine $container}}
-        {{if exists $upstream_path}}
-           server worker-canary{{$index}} {{getv $upstream_path}} check maxconn 1
         {{end}}
       {{end}}
     {{end}}
