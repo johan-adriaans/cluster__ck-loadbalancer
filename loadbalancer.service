@@ -1,0 +1,27 @@
+[Unit]
+Description=Shoppagina SSL Offloading loadbalancer
+After=docker.service
+After=docker-registry.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+RestartSec=15
+TimeoutStartSec=2m
+Restart=always
+ExecStartPre=-/usr/bin/docker kill loadbalancer
+ExecStartPre=-/usr/bin/docker rm loadbalancer
+ExecStartPre=/usr/bin/docker pull localhost:5000/loadbalancer
+ExecStart=/usr/bin/docker run --rm --name loadbalancer \
+  --net="host" \
+  -p 80:80 -p 443:443 -p 1000:1000 \
+  -v /mnt/data/ssl:/etc/ssl/private:ro \
+  -v /mnt/data/access_control:/etc/haproxy/access_control:ro \
+  -e ETCD_NODE=127.0.0.1:2379 \
+  --log-opt max-size=50m \
+  localhost:5000/loadbalancer
+ExecStop=/usr/bin/docker stop loadbalancer
+
+[X-Fleet]
+MachineMetadata=role=worker
+Global=true

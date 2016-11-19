@@ -1,0 +1,35 @@
+#!/bin/bash
+
+MONITOR=/etc/haproxy/access_control/*.lst
+SHA=0
+PREVIOUS_SHA=0
+
+update_sha()
+{
+  SHA=`ls -ltr $MONITOR | tail -n 1 | sha1sum`
+}
+
+reload () {
+  /usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -D -sf $(cat /var/run/haproxy.pid)
+  echo "["$(date)"] Reload complete..."
+}
+
+changed () {
+  echo "["$(date)"] List files changed, Reloading HAproxy"
+  reload
+  PREVIOUS_SHA=$SHA
+}
+
+run () {
+  while true; do
+    update_sha
+    if [[ $SHA != $PREVIOUS_SHA ]] ; then changed; fi
+    sleep 10
+  done
+}
+
+update_sha
+PREVIOUS_SHA=$SHA
+
+echo "["$(date)"] monitoring whitelist, blacklist and badbots for changes"
+run
