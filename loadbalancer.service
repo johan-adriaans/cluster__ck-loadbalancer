@@ -1,5 +1,5 @@
 [Unit]
-Description=Shoppagina SSL Offloading loadbalancer
+Description=SSL Offloading loadbalancer
 After=docker.service
 After=docker-registry.service
 Requires=docker.service

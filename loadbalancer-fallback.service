@@ -1,5 +1,5 @@
 [Unit]
-Description=Shoppagina SSL Offloading loadbalancer fallback. Start this service before stopping the main loadbalancer
+Description=SSL Offloading loadbalancer fallback. Start this service before stopping the main loadbalancer
 After=docker.service
 After=docker-registry.service
 Requires=docker.service
